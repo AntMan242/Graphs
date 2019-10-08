@@ -1,3 +1,5 @@
+from util import Stack, Queue
+
 """
 Simple graph implementation
 """
@@ -11,45 +13,129 @@ class Graph:
         """
         Add a vertex to the graph.
         """
-        pass  # TODO
+        self.vertices[vertex] = set()
     def add_edge(self, v1, v2):
         """
         Add a directed edge to the graph.
         """
-        pass  # TODO
+        if v1 in self.vertices and v2 in self.vertices:
+            self.vertices[v1].add(v2)
+        else:
+            raise IndexError('Cannot create edge based on given vertices!')
+        
+
     def bft(self, starting_vertex):
         """
         Print each vertex in breadth-first order
         beginning from starting_vertex.
         """
-        pass  # TODO
+        # BFT Pseudocode
+        # Create a queue
+        qq = Queue()
+        # Create list of visited nodes
+        visited = set()
+        # Put starting node in the queue
+        qq.enqueue(starting_vertex)
+        # While: queue not empty
+        while qq.size() > 0:
+        # Pop first node out of queue
+            vertex = qq.dequeue()
+        # If not visited
+            if vertex not in visited:
+                visited.add(vertex)
+                print(vertex)
+        # Mark as visited
+        # Get adjacent edges and add to list
+                for next_vert in self.vertices[vertex]:
+                    qq.enqueue(next_vert)
+        # Goto top of loop
+
+
     def dft(self, starting_vertex):
         """
         Print each vertex in depth-first order
         beginning from starting_vertex.
         """
-        pass  # TODO
-    def dft_recursive(self, starting_vertex):
+        stack = Stack()
+        # BFT Pseudocode
+        # Create a queue
+        qq = Queue()
+        # Create list of visited nodes
+        visited = set()
+        stack.push(starting_vertex)
+        # While: queue not empty
+        while stack.size() > 0:
+        # Pop first node out of queue
+            vertex = stack.pop()
+        # If not visited
+            if vertex not in visited:
+                visited.add(vertex)
+                print(vertex)
+        # Mark as visited
+        # Get adjacent edges and add to list
+                for next_vert in self.vertices[vertex]:
+                    stack.push(next_vert)
+        # Goto top of loop
+    def dft_recursive(self, starting_vertex, visited=None):
         """
         Print each vertex in depth-first order
         beginning from starting_vertex.
         This should be done using recursion.
         """
-        pass  # TODO
+
+        if visited is None:
+            visited = set()
+        print(starting_vertex)
+        visited.add(starting_vertex)
+        for child_vertex in self.vertices[starting_vertex]:
+            if child_vertex not in visited:
+                self.dft_recursive(child_vertex, visited)
+
+
     def bfs(self, starting_vertex, destination_vertex):
         """
         Return a list containing the shortest path from
         starting_vertex to destination_vertex in
         breath-first order.
         """
-        pass  # TODO
+
+        qq = Queue()
+        visited = set()
+        qq.enqueue([starting_vertex])
+        while qq.size() > 0:
+            path = qq.dequeue()
+            node = path[-1]
+            if node not in visited:
+                return path
+            else:
+                visited.add(node)
+                for connection in self.vertices[node]:
+                    copy_path = path[:]
+                    copy_path.append(connection)
+                    qq.enqueue(copy_path)
+
+
     def dfs(self, starting_vertex, destination_vertex):
         """
         Return a list containing a path from
         starting_vertex to destination_vertex in
         depth-first order.
         """
-        pass  # TODO
+        stack = Stack()
+        visited = set()
+        stack.push([starting_vertex])
+        while stack.size():
+            path = stack.pop()
+            node = path[-1]
+            if node is not visited:
+                if node == destination_vertex:
+                    return path
+                else:
+                    visited.add(node)
+                    for connection in self.vertices[node]:
+                        copy_path = path[:]
+                        copy_path.append(connection)
+                        stack.push(copy_path)
 
 
 
