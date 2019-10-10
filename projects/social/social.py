@@ -1,4 +1,17 @@
+import random
 
+class Queue():
+    def __init__(self):
+        self.queue = []
+    def enqueue(self, value):
+        self.queue.append(value)
+    def dequeue(self):
+        if self.size() > 0:
+            return self.queue.pop(0)
+        else:
+            return None
+    def size(self):
+        return len(self.queue)
 
 class User:
     def __init__(self, name):
@@ -47,8 +60,21 @@ class SocialGraph:
         # !!!! IMPLEMENT ME
 
         # Add users
+        for i in range(0, numUsers):
+            self.addUser(f"User {i}") #Note: Debug function
 
+        possible_friendships = []
         # Create friendships
+        for UserID in self.users:
+            for friendID in range(UserID + 1):
+                possible_friendships.append(UserID, friendID)
+
+        random.shuffle(possible_friendships)
+
+        for i in range(numUsers * avgFriendships // 2):
+            friendship = possible_friendships[i]
+            self.addFriendship(friendship[0], friendship[1])
+
 
     def getAllSocialPaths(self, userID):
         """
@@ -60,13 +86,38 @@ class SocialGraph:
         The key is the friend's ID and the value is the path.
         """
         visited = {}  # Note that this is a dictionary, not a set
-        # !!!! IMPLEMENT ME
+        qq = Queue()
+
+        qq.enqueue([userID])
+
+        while qq.size() > 0:
+            path = qq.dequeue()
+
+            v = path[-1]
+
+            if v not in visited:
+                visited[v] = path #Adding this path to the dictionary as A shortest way here
+
+                for neighbor in self.friendships[v]: # Current Node
+                    path_copy = path.copy()
+                    path_copy.append(neighbor)
+                    qq.enqueue(path_copy)
+
         return visited
 
 
 if __name__ == '__main__':
     sg = SocialGraph()
     sg.populateGraph(10, 2)
+    print("Print Friendships")
     print(sg.friendships)
     connections = sg.getAllSocialPaths(1)
+    print("Print Connections")
     print(connections)
+    print(f"User in extended social network: {len(connections) - 1}")
+
+    total_social_paths = 0
+    for user_id in connections:
+        total_social_paths += len(connections[user_id])
+
+    print(f"Avg length of social path: {total_social_paths/len(connections)}")
